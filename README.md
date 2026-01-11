@@ -24,9 +24,6 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - [ ] Step 6: Add validation / error handling
 - [ ] Step 7: Write unit tests
 
-## Current Progress
-**Step 1 Completed**: Spring Boot project initialized with Maven, basic structure in place.
-
 ## API Endpoints (To be implemented)
 
 ### Send Message
@@ -78,10 +75,16 @@ Go to `http://localhost:8080`
 ```
 src/
 ├── main/
-│   └── java/com.smsrouting/
-│      └── SmsRoutingServiceApplication.java
+│   └── java/com/smsrouting/
+│       ├── controller/
+│       ├── model/
+│       │   ├── Carrier.java
+│       │   ├── Message.java
+│       │   └── MessageStatus.java
+│       ├── service/
+│       └── SmsRoutingServiceApplication.java
 └── test/
-    └── java/com.smsrouting/
+    └── java/com/smsrouting/
         └── SmsRoutingServiceApplicationTests.java
 ```
 
