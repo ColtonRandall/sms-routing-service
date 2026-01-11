@@ -24,7 +24,7 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - [x] Step 5: Implement carrier routing logic
 - [x] Step 6: Build REST controllers
 - [x] Step 7: Add validation / error handling
-- [ ] Step 8: Write unit tests
+- [x] Step 8: Write unit tests
 
 ## API Endpoints (To be implemented)
 
@@ -116,7 +116,10 @@ src/
 │       └── SmsRoutingServiceApplication.java
 └── test/
     └── java/com/smsrouting/
+        └── CarrierServiceTests.java
+        └── MessageServiceTests.java
         └── SmsRoutingServiceApplicationTests.java
+        
 ```
 
 ## Design Decisions / Assumptions
