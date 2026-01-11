@@ -18,11 +18,12 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - [x] Step 1: Set up project
 - [x] Step 1b: Git repository and documentation initialized
 - [x] Step 2: Core domain models
-- [ ] Step 3: Create base Message Service structure
-- [ ] Step 4: Implement carrier routing logic
-- [ ] Step 5: Build REST controllers
-- [ ] Step 6: Add validation / error handling
-- [ ] Step 7: Write unit tests
+- [x] Step 3: Create in-memory Message storage / repository
+- [ ] Step 4: Create base Message and Carrier Service structure
+- [ ] Step 5: Implement carrier routing logic
+- [ ] Step 6: Build REST controllers
+- [ ] Step 7: Add validation / error handling
+- [ ] Step 8: Write unit tests
 
 ## API Endpoints (To be implemented)
 
@@ -81,6 +82,8 @@ src/
 │       │   ├── Carrier.java
 │       │   ├── Message.java
 │       │   └── MessageStatus.java
+│       ├── repository/
+│       │   └── MessageRepository.java
 │       ├── service/
 │       └── SmsRoutingServiceApplication.java
 └── test/
@@ -95,5 +98,6 @@ src/
 - I used ENUMs for `Carrier` and `MessageStatus` for a cleaner, limited set of values, and to give the values 
   'type-safety' (i.e. avoid mistyping a status). It just keeps the code cleaner and more organised/structured.
 
-## Future considerations / Improvements
+## Future considerations / Improvements (time-permitting)
 - Generate each message with a `createdAt` timestamp.
+- Split off `MessageRepository` and `OptOutRepository` into two separate in-memory repos. 
