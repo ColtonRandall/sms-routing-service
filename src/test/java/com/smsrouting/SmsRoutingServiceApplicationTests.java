@@ -1,4 +1,4 @@
-package com.sms_routing;
+package com.smsrouting;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

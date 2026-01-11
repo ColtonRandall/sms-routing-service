@@ -16,7 +16,8 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 
 ## Project Status
 - [x] Step 1: Set up project
-- [ ] Step 2: Core domain models
+- [x] Step 1b: Git repository and documentation initialized
+- [x] Step 2: Core domain models
 - [ ] Step 3: Create base Message Service structure
 - [ ] Step 4: Implement carrier routing logic
 - [ ] Step 5: Build REST controllers
@@ -77,9 +78,19 @@ Go to `http://localhost:8080`
 ```
 src/
 ├── main/
-│   └── java/com.sms_routing/
+│   └── java/com.smsrouting/
 │      └── SmsRoutingServiceApplication.java
 └── test/
-    └── java/com.sms_routing/
+    └── java/com.smsrouting/
         └── SmsRoutingServiceApplicationTests.java
 ```
+
+## Design Decisions / Assumptions
+- I explicitly did not use Lombok. Even though it's useful for reducing boilerplate code (i.e. getters/setters), I 
+  figured given this is a small project it wouldn't be necessary - also to avoid the need for the lombok plugin 
+  within the project.
+- I used ENUMs for `Carrier` and `MessageStatus` for a cleaner, limited set of values, and to give the values 
+  'type-safety' (i.e. avoid mistyping a status). It just keeps the code cleaner and more organised/structured.
+
+## Future considerations / Improvements
+- Generate each message with a `createdAt` timestamp.
