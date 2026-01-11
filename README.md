@@ -71,7 +71,7 @@ Go to `http://localhost:8080`
 ## Testing
 - Unit testing
 - Curl commands (can copy/paste to verify in-console)
-- Postman collection (I will provide this in the README)
+- Postman collection - found here: https://coltonrandall-6575257.postman.co/workspace/Colton-Randall's-Workspace~43319d0a-6c79-4116-87ee-3caecc1dda62/collection/43484858-df44e1d3-e164-41fd-ad36-e7c66bd9edef?action=share&source=copy-link&creator=43484858
 
 ### Endpoint test run - screenshots
 
