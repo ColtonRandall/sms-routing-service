@@ -28,7 +28,7 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - [x] Step 8: Write unit tests
 - [x] Step 9: Clean up code & refine README
 
-## API Endpoints (To be implemented)
+## API Endpoints
 
 ### Send Message
 ```
