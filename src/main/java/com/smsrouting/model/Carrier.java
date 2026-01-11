@@ -1,7 +1,8 @@
 package com.smsrouting.model;
 
 public enum Carrier {
-    AUSTRALIA,
-    NEW_ZEALAND,
-    GLOBAL
+    TELSTRA, // AU
+    OPTUS, //  AU
+    SPARK, // NZ
+    GLOBAL // other
 }

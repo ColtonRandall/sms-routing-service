@@ -22,8 +22,8 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - [x] Step 3: Create in-memory Message storage / repository
 - [x] Step 4: Create base Message and Carrier Service structure
 - [x] Step 5: Implement carrier routing logic
-- [ ] Step 6: Build REST controllers
-- [ ] Step 7: Add validation / error handling
+- [x] Step 6: Build REST controllers
+- [x] Step 7: Add validation / error handling
 - [ ] Step 8: Write unit tests
 
 ## API Endpoints (To be implemented)
@@ -73,12 +73,37 @@ Go to `http://localhost:8080`
 - Curl commands (can copy/paste to verify in-console)
 - Postman collection (I will provide this in the README)
 
+### Endpoint test run - screenshots
+
+**Send a message to AU**
+
+Telstra:
+![](images/sendMessageAU-telstra.png)
+Optus:
+![](images/sendMessageAU-optus.png)
+
+**Send a message to NZ**
+![](images/sendMessageNZ.png)
+
+**Send a message to UK (Global)**
+![](images/sendMessageGlobal.png)
+
+**Get message status**
+![](images/getMessageStatus.png)
+
+**Opt out**
+![](images/optOut.png)
+
+**Confirm opted out numbers are blocked**
+![](images/confirmOptOut.png)
+
 ## Project Structure
 ```
 src/
 ├── main/
 │   └── java/com/smsrouting/
 │       ├── controller/
+│       │   └── MessageController.java
 │       ├── model/
 │       │   ├── Carrier.java
 │       │   ├── Message.java
