@@ -11,10 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class MessageRepository {
 
-    /*
-        - concurrent hashmap will store messages against their id with built-in thread-safety
-        - I'm not explicitly using a hash set as it's not thread safe - hence `newKeySet()`
-    */
     private final Map<String, Message> messages = new ConcurrentHashMap<>();
     private final Set<String> optedOutNumbers = ConcurrentHashMap.newKeySet();
 

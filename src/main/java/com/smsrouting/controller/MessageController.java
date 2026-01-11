@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 public class MessageController {
@@ -18,7 +17,6 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    // post messages
     @PostMapping("/messages")
     public ResponseEntity<Message> sendMessage(@RequestBody Map<String, String> request){
         try{
@@ -33,7 +31,6 @@ public class MessageController {
         }
     }
 
-    // get messages by id
     @GetMapping("/messages/{id}")
     public ResponseEntity<Message> getMessageStatus(@PathVariable String id){
         return messageService.getMessage(id)
@@ -41,7 +38,6 @@ public class MessageController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // opt out management
     @PostMapping("/optout/{phoneNumber}")
     public ResponseEntity<Map<String, String>> optOut(@PathVariable String phoneNumber){
         try{

@@ -14,10 +14,11 @@ public class CarrierService {
     private final AtomicBoolean useTelstra = new AtomicBoolean(true); // maintains thread-safety
 
     public Carrier determineCarrier(String phoneNumber){
-        if (phoneNumber.startsWith(AU_PREFIX)){
+        String standardisedNumber = standardiseNumber(phoneNumber);
+        if (standardisedNumber.startsWith(AU_PREFIX)){
             return useTelstra.getAndSet(!useTelstra.get()) ? Carrier.TELSTRA : Carrier.OPTUS; // alternate telstra
             // and optus
-        } else if (phoneNumber.startsWith(NZ_PREFIX)){
+        } else if (standardisedNumber.startsWith(NZ_PREFIX)){
             return Carrier.SPARK;
         } else {
             return Carrier.GLOBAL;
@@ -25,16 +26,26 @@ public class CarrierService {
     }
 
     public boolean isValidPhoneNumber(String phoneNumber){
-
         if(phoneNumber == null || phoneNumber.isEmpty()){
             return false;
         }
 
-        boolean hasValidPrefix = phoneNumber.startsWith("+");
-        boolean containsOnlyValidCharacters = phoneNumber.matches("\\+[0-9]+");
-        boolean hasValidLength = phoneNumber.length() >= 9 && phoneNumber.length() <= 16; // includes the "+"
+        // check for letters before standardising the number
+        if(phoneNumber.matches(".*[a-zA-Z].*")){
+            return false;
+        }
+
+        String standardisedNumber = standardiseNumber(phoneNumber);
+
+        boolean hasValidPrefix = standardisedNumber.startsWith("+");
+        boolean containsOnlyValidCharacters = standardisedNumber.matches("\\+[0-9]+");
+        boolean hasValidLength = standardisedNumber.length() >= 9 && standardisedNumber.length() <= 16; // includes the "+"
         // followed by 8-15 digits
 
         return hasValidPrefix && containsOnlyValidCharacters && hasValidLength;
+    }
+
+    public String standardiseNumber(String phoneNumber) {
+        return phoneNumber.replaceAll("[^0-9+]", "");
     }
 }

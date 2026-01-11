@@ -4,7 +4,7 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 
 ## Features
 - Send SMS messages via REST API
-- Route messages by carrier (AU/NZ based on phone prefix)
+- Route messages by carrier (AU/NZ/Global based on phone prefix)
 - Handle opt-out management
 - Track message delivery status
 - In-memory storage (ConcurrentHashMap and Set)
@@ -26,6 +26,7 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - [x] Step 6: Build REST controllers
 - [x] Step 7: Add validation / error handling
 - [x] Step 8: Write unit tests
+- [x] Step 9: Clean up code & refine README
 
 ## API Endpoints (To be implemented)
 
@@ -67,10 +68,8 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-Go to `http://localhost:8080`
-
 ## Testing
-- Unit testing
+- Unit testing (run `mvn test`)
 - Curl commands (can copy/paste to verify in-console):
 
     ```bash
@@ -91,6 +90,8 @@ Telstra:
 ![](images/sendMessageAU-telstra.png)
 Optus:
 ![](images/sendMessageAU-optus.png)
+Phone number with spaces / dashes:
+![](images/numberWithSpacesAndDashes.png)
 
 **Send a message to NZ**
 ![](images/sendMessageNZ.png)
@@ -138,9 +139,24 @@ src/
   within the project.
 - I used ENUMs for `Carrier` and `MessageStatus` for a cleaner, limited set of values, and to give the values 
   'type-safety' (i.e. avoid mistyping a status). It just keeps the code cleaner and more organised/structured.
+- Every `Message` object is created with a  default status of `PENDING`.
+- I have assumed each number should start with a "+" and be between 8-15 numbers long.
+- Input is automatically standardised - spaces, dashes, and special characters are removed for processing
+  - Example: `+64 123-456 789` → `+64123456789`. Note - the API response still shows what the user put in (i.e. `+64 123-456 789`)
+  - Numbers with spaces or dashes are still considered **valid**.
+  - Numbers containing letters are **invalid**.
+- The transition from SENT to DELIVERED is **immediate** in this project.
+  - In production, DELIVERED status would be set asynchronously via carrier webhook/callback.
+- AU numbers (+61) **alternate** between Telstra and Optus for this project for simplicity, and to demonstrate multiple 
+  carrier functionality.
+- Opted out messages are still created and saved but with a **BLOCKED** status, which allows for auditing which 
+  numbers are blocked for future use.
+- In-memory storage uses a ConcurrentHashMap for thread-safety, since, in production multiple messages may be being 
+  sent to one number at a given time, and will store messages against their `messageId`.
+- Opted-out numbers use `ConcurrentHashMap.newKeySet()` instead of `HashSet` because `HashSet` is not thread-safe. 
+  This ensures concurrent opt-out operations don't cause issues/data corruption.
 
 ## Future considerations / Improvements (time-permitting)
-- Generate each message with a `createdAt` timestamp.
-- Split off `MessageRepository` and `OptOutRepository` into two separate in-memory repos. 
-- Strip phone numbers of spaces (i.e. `+64 123 456 7890` becomes `+641234567890`) --> currently assuming all input 
-  numbers do not contain spaces.
+- Database persistence 
+- Async delivery - receive real-time carrier delivery confirmation instead of simulating it.
+- Monitoring and logging for latency / failures and alerting for system issues

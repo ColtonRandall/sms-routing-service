@@ -20,43 +20,34 @@ public class MessageServiceTests {
     @Autowired
     private MessageRepository repository;
 
-    // core tests
     @Test
     void testSendToValidAustralianNumber() {
-        // arrange & act
         Message result = messageService.sendMessage("+61123456789", "Test AU message", "SMS");
 
-        // assert
         assertTrue(result.getCarrier() == Carrier.TELSTRA || result.getCarrier() == Carrier.OPTUS);
-        assertEquals(MessageStatus.SENT, result.getStatus());
+        assertEquals(MessageStatus.DELIVERED, result.getStatus());
     }
 
     @Test
     void testSendToValidNZNumber() {
-        // arrange & act
         Message result = messageService.sendMessage("+64123456789", "Test NZ message", "SMS");
 
-        // assert
         assertEquals(Carrier.SPARK, result.getCarrier());
-        assertEquals(MessageStatus.SENT, result.getStatus());
+        assertEquals(MessageStatus.DELIVERED, result.getStatus());
     }
 
     @Test
     void testSendToOptedOutNumber() {
-        // arrange
         String phoneNumber = "+61412345678";
 
-        // act
         repository.optOut(phoneNumber);
         Message result = messageService.sendMessage(phoneNumber, "Test opted out number", "SMS");
 
         assertEquals(MessageStatus.BLOCKED, result.getStatus());
     }
 
-    // edge cases
     @Test
     void testSendToInvalidPhoneNumber() {
-        // arrange & act & assert
         assertThrows(IllegalArgumentException.class, () -> {
             messageService.sendMessage("123456789", "Test message", "SMS");
         });
@@ -64,7 +55,6 @@ public class MessageServiceTests {
 
     @Test
     void testSendToPhoneNumberMissingCountryCode() {
-        // arrange & act & assert
         assertThrows(IllegalArgumentException.class, () -> {
             messageService.sendMessage("0412345678", "Test message", "SMS");
         });
@@ -72,31 +62,25 @@ public class MessageServiceTests {
 
     @Test
     void testSendEmptyMessageContent() {
-        // arrange & act
         Message result = messageService.sendMessage("+61123456789", "", "SMS");
 
-        // assert
-        assertEquals(MessageStatus.SENT, result.getStatus());
+        assertEquals(MessageStatus.DELIVERED, result.getStatus());
         assertEquals("", result.getContent());
     }
 
     @Test
     void testSendNullMessageContent() {
-        // arrange & act
         Message result = messageService.sendMessage("+61123456789", null, "SMS");
 
-        // assert
-        assertEquals(MessageStatus.SENT, result.getStatus());
+        assertEquals(MessageStatus.DELIVERED, result.getStatus());
         assertNull(result.getContent());
     }
 
     @Test
     void testSendMMSMessage() {
-        // arrange & act
         Message result = messageService.sendMessage("+61123456789", "Test MMS message", "MMS");
 
-        // assert
-        assertEquals(MessageStatus.SENT, result.getStatus());
+        assertEquals(MessageStatus.DELIVERED, result.getStatus());
         assertEquals("MMS", result.getFormat());
     }
 }

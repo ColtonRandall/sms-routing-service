@@ -19,17 +19,16 @@ public class MessageService {
     }
 
     public Message sendMessage(String destinationNumber, String content, String format){
-        // validate num first
-        if(!carrierService.isValidPhoneNumber(destinationNumber)){
+        String standardisedNumber = carrierService.standardiseNumber(destinationNumber);
+
+        if(!carrierService.isValidPhoneNumber(standardisedNumber)){
             throw new IllegalArgumentException("Phone number: " + destinationNumber + " is invalid");
         }
 
-        // check if number has opted out
-        if(repository.isOptedOut(destinationNumber)){
+        if(repository.isOptedOut(standardisedNumber)){
             return createBlockedMessage(destinationNumber, content, format);
         }
 
-        // send the message
         return createAndSendMessage(destinationNumber, content, format);
     }
 
@@ -38,11 +37,13 @@ public class MessageService {
     }
 
     public void optOutNumber(String phoneNumber) {
-        repository.optOut(phoneNumber);
+        String standardisedNumber = carrierService.standardiseNumber(phoneNumber);
+        repository.optOut(standardisedNumber);
     }
 
-
-    // helper methods
+    /*
+        Helper methods
+     */
     private Message createAndSendMessage(String destinationNumber, String content, String format) {
         Message message = new Message(destinationNumber, content, format);
 
@@ -65,24 +66,11 @@ public class MessageService {
     }
 
     private void simulateSend(Message message) {
-        // mock carrier API call
-        System.out.println("Sending message " + message.getId() +
-                " to " + message.getCarrier() +
-                " for " + message.getDestinationNumber());
-
+        // simulate carrier api call
         message.setStatus(MessageStatus.SENT);
-    }
 
-    /*
-        NOTE: simulate delivered message - in real/production, it would be set by carrier callback/webhook
-     */
-    public void simulateDelivery(String messageId) {
-        Message message = repository.findMessageById(messageId)
-                .orElseThrow(() -> new IllegalArgumentException("Message not found with id: " + messageId));
-
-        if (message.getStatus() == MessageStatus.SENT) {
-            message.setStatus(MessageStatus.DELIVERED);
-            System.out.println("Message " + messageId + " delivered");
-        }
+        // simulate immediate delivery of message
+        // note - in production, the status would be set by carrier callback/webhook asynchronously
+        message.setStatus(MessageStatus.DELIVERED);
     }
 }

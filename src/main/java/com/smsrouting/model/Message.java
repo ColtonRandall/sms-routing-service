@@ -2,7 +2,6 @@ package com.smsrouting.model;
 
 import java.util.UUID;
 
-
 public class Message {
     private String id;
     private String destinationNumber;
@@ -11,16 +10,14 @@ public class Message {
     private MessageStatus status;
     private Carrier carrier;
 
-    // constructor
     public Message(String destinationNumber, String content, String format) {
         this.id = UUID.randomUUID().toString();
         this.destinationNumber = destinationNumber;
         this.content = content;
         this.format = format;
-        this.status = MessageStatus.PENDING; // default status
+        this.status = MessageStatus.PENDING;
     }
 
-    // getters and setters
     public String getId() {
         return id;
     }
