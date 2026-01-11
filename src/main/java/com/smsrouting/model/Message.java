@@ -1,6 +1,7 @@
 package com.smsrouting.model;
 
-import java.time.LocalDateTime;
+import java.util.UUID;
+
 
 public class Message {
     private String id;
@@ -11,8 +12,12 @@ public class Message {
     private Carrier carrier;
 
     // constructor
-    public Message(MessageStatus status) {
-        this.status = status;
+    public Message(String destinationNumber, String content, String format) {
+        this.id = UUID.randomUUID().toString();
+        this.destinationNumber = destinationNumber;
+        this.content = content;
+        this.format = format;
+        this.status = MessageStatus.PENDING; // default status
     }
 
     // getters and setters

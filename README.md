@@ -7,7 +7,8 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - Route messages by carrier (AU/NZ based on phone prefix)
 - Handle opt-out management
 - Track message delivery status
-- In-memory storage
+- In-memory storage (ConcurrentHashMap and Set)
+- Thread-safety (Accounts for future-proofing multiple requests at one time)
 
 ## Technology Stack
 - Java 21
@@ -19,8 +20,8 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - [x] Step 1b: Git repository and documentation initialized
 - [x] Step 2: Core domain models
 - [x] Step 3: Create in-memory Message storage / repository
-- [ ] Step 4: Create base Message and Carrier Service structure
-- [ ] Step 5: Implement carrier routing logic
+- [x] Step 4: Create base Message and Carrier Service structure
+- [x] Step 5: Implement carrier routing logic
 - [ ] Step 6: Build REST controllers
 - [ ] Step 7: Add validation / error handling
 - [ ] Step 8: Write unit tests
@@ -85,6 +86,8 @@ src/
 │       ├── repository/
 │       │   └── MessageRepository.java
 │       ├── service/
+│       │   └── CarrierService.java
+│       │   └── MessageService.java
 │       └── SmsRoutingServiceApplication.java
 └── test/
     └── java/com/smsrouting/
@@ -101,3 +104,5 @@ src/
 ## Future considerations / Improvements (time-permitting)
 - Generate each message with a `createdAt` timestamp.
 - Split off `MessageRepository` and `OptOutRepository` into two separate in-memory repos. 
+- Strip phone numbers of spaces (i.e. `+64 123 456 7890` becomes `+641234567890`) --> currently assuming all input 
+  numbers do not contain spaces.
