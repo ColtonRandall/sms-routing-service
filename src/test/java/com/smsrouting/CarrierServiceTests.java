@@ -3,9 +3,11 @@ package com.smsrouting;
 import com.smsrouting.model.Carrier;
 import com.smsrouting.service.CarrierService;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 class CarrierServiceTests {
 
     private final CarrierService carrierService = new CarrierService();

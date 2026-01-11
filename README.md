@@ -12,7 +12,8 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 
 ## Technology Stack
 - Java 21
-- Spring Boot 4.0.1
+- Spring Boot 3.4.1
+- JUnit 5
 - Maven
 
 ## Project Status
