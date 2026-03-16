@@ -1,6 +1,11 @@
 # SMS Routing Service
 
-A simple SMS routing service built with Java and Spring Boot that handles message routing, opt-outs, and carrier selection.
+[![Build](https://github.com/ColtonRandall/sms-routing-service/actions/workflows/build.yml/badge.svg)](https://github.com/ColtonRandall/sms-routing-service/actions/workflows/build.yml)
+[![Java](https://img.shields.io/badge/Java-21-007396?logo=openjdk)](https://openjdk.org/projects/jdk/21/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.1-6DB33F?logo=springboot)](https://spring.io/projects/spring-boot)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A REST API for SMS message routing built with Java and Spring Boot. Handles carrier selection, opt-out management, and delivery status tracking.
 
 ## Features
 - Send SMS messages via REST API
@@ -17,16 +22,17 @@ A simple SMS routing service built with Java and Spring Boot that handles messag
 - Maven
 
 ## Project Status
-- [x] Step 1: Set up project
-- [x] Step 1b: Git repository and documentation initialized
-- [x] Step 2: Core domain models
-- [x] Step 3: Create in-memory Message storage / repository
-- [x] Step 4: Create base Message and Carrier Service structure
-- [x] Step 5: Implement carrier routing logic
-- [x] Step 6: Build REST controllers
-- [x] Step 7: Add validation / error handling
-- [x] Step 8: Write unit tests
-- [x] Step 9: Clean up code & refine README
+All planned features are complete and passing CI.
+
+- [x] Project setup and Git initialisation
+- [x] Core domain models
+- [x] In-memory message storage
+- [x] Message and carrier service
+- [x] Carrier routing logic (AU/NZ/Global)
+- [x] REST controllers
+- [x] Validation and error handling
+- [x] Unit tests
+- [x] CI/CD with GitHub Actions
 
 ## API Endpoints
 
@@ -58,6 +64,10 @@ POST /optout/{phoneNumber}
 
 ## Building and Running
 
+### Prerequisites
+- Java 21+
+- Maven 3.x
+
 ### Build
 ```bash
 mvn clean install
@@ -67,6 +77,11 @@ mvn clean install
 ```bash
 mvn spring-boot:run
 ```
+
+The service starts on `http://localhost:8080`.
+
+## CI/CD
+Every push and pull request triggers a GitHub Actions build that compiles the project and runs all tests. See [`.github/workflows/build.yml`](.github/workflows/build.yml).
 
 ## Testing
 - Unit testing (run `mvn test`)
