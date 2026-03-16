@@ -3,6 +3,7 @@ package com.smsrouting;
 import com.smsrouting.model.Carrier;
 import com.smsrouting.model.Message;
 import com.smsrouting.model.MessageStatus;
+import com.smsrouting.model.MessageType;
 import com.smsrouting.repository.MessageRepository;
 import com.smsrouting.service.MessageService;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class MessageServiceTests {
+class MessageServiceTests {
 
     @Autowired
     private MessageService messageService;
@@ -22,7 +23,7 @@ public class MessageServiceTests {
 
     @Test
     void testSendToValidAustralianNumber() {
-        Message result = messageService.sendMessage("+61123456789", "Test AU message", "SMS");
+        Message result = messageService.sendMessage("+61123456789", "Test AU message", MessageType.SMS);
 
         assertTrue(result.getCarrier() == Carrier.TELSTRA || result.getCarrier() == Carrier.OPTUS);
         assertEquals(MessageStatus.DELIVERED, result.getStatus());
@@ -30,7 +31,7 @@ public class MessageServiceTests {
 
     @Test
     void testSendToValidNZNumber() {
-        Message result = messageService.sendMessage("+64123456789", "Test NZ message", "SMS");
+        Message result = messageService.sendMessage("+64123456789", "Test NZ message", MessageType.SMS);
 
         assertEquals(Carrier.SPARK, result.getCarrier());
         assertEquals(MessageStatus.DELIVERED, result.getStatus());
@@ -41,7 +42,7 @@ public class MessageServiceTests {
         String phoneNumber = "+61412345678";
 
         repository.optOut(phoneNumber);
-        Message result = messageService.sendMessage(phoneNumber, "Test opted out number", "SMS");
+        Message result = messageService.sendMessage(phoneNumber, "Test opted out number", MessageType.SMS);
 
         assertEquals(MessageStatus.BLOCKED, result.getStatus());
     }
@@ -49,20 +50,20 @@ public class MessageServiceTests {
     @Test
     void testSendToInvalidPhoneNumber() {
         assertThrows(IllegalArgumentException.class, () -> {
-            messageService.sendMessage("123456789", "Test message", "SMS");
+            messageService.sendMessage("123456789", "Test message", MessageType.SMS);
         });
     }
 
     @Test
     void testSendToPhoneNumberMissingCountryCode() {
         assertThrows(IllegalArgumentException.class, () -> {
-            messageService.sendMessage("0412345678", "Test message", "SMS");
+            messageService.sendMessage("0412345678", "Test message", MessageType.SMS);
         });
     }
 
     @Test
     void testSendEmptyMessageContent() {
-        Message result = messageService.sendMessage("+61123456789", "", "SMS");
+        Message result = messageService.sendMessage("+61123456789", "", MessageType.SMS);
 
         assertEquals(MessageStatus.DELIVERED, result.getStatus());
         assertEquals("", result.getContent());
@@ -70,7 +71,7 @@ public class MessageServiceTests {
 
     @Test
     void testSendNullMessageContent() {
-        Message result = messageService.sendMessage("+61123456789", null, "SMS");
+        Message result = messageService.sendMessage("+61123456789", null, MessageType.SMS);
 
         assertEquals(MessageStatus.DELIVERED, result.getStatus());
         assertNull(result.getContent());
@@ -78,9 +79,9 @@ public class MessageServiceTests {
 
     @Test
     void testSendMMSMessage() {
-        Message result = messageService.sendMessage("+61123456789", "Test MMS message", "MMS");
+        Message result = messageService.sendMessage("+61123456789", "Test MMS message", MessageType.MMS);
 
         assertEquals(MessageStatus.DELIVERED, result.getStatus());
-        assertEquals("MMS", result.getFormat());
+        assertEquals(MessageType.MMS, result.getFormat());
     }
 }

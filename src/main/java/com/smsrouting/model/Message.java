@@ -6,16 +6,16 @@ public class Message {
     private String id;
     private String destinationNumber;
     private String content;
-    private String format;
+    private MessageType format;
     private MessageStatus status;
     private Carrier carrier;
     private Long sendAt;
 
-    public Message(String destinationNumber, String content, String format) {
+    public Message(String destinationNumber, String content, MessageType format) {
         this(destinationNumber, content, format, null);
     }
 
-    public Message(String destinationNumber, String content, String format, Long sendAt) {
+    public Message(String destinationNumber, String content, MessageType format, Long sendAt) {
         this.id = UUID.randomUUID().toString();
         this.destinationNumber = destinationNumber;
         this.content = content;
@@ -48,11 +48,11 @@ public class Message {
         this.content = content;
     }
 
-    public String getFormat() {
+    public MessageType getFormat() {
         return format;
     }
 
-    public void setFormat(String format) {
+    public void setFormat(MessageType format) {
         this.format = format;
     }
 

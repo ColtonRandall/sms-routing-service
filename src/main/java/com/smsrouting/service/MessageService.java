@@ -1,12 +1,13 @@
 package com.smsrouting.service;
 
+import com.smsrouting.dto.MessageRequest;
 import com.smsrouting.model.Message;
 import com.smsrouting.model.MessageStatus;
+import com.smsrouting.model.MessageType;
 import com.smsrouting.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -20,24 +21,15 @@ public class MessageService {
         this.carrierService = carrierService;
     }
 
-    public Message sendMessage(Map<String, Object> request) {
-        String destinationNumber = (String) request.get("destinationNumber");
-        String content = (String) request.get("content");
-        String format = (String) request.getOrDefault("format", "SMS");
-
-        Long sendAt = null;
-        if (request.containsKey("sendAt") && request.get("sendAt") instanceof Number number) {
-            sendAt = number.longValue();
-        }
-
-        return sendMessage(destinationNumber, content, format, sendAt);
+    public Message sendMessage(MessageRequest request) {
+        return sendMessage(request.getDestinationNumber(), request.getContent(), request.getFormat(), request.getSendAt());
     }
 
-    public Message sendMessage(String destinationNumber, String content, String format) {
+    public Message sendMessage(String destinationNumber, String content, MessageType format) {
         return sendMessage(destinationNumber, content, format, null);
     }
 
-    public Message sendMessage(String destinationNumber, String content, String format, Long sendAt) {
+    public Message sendMessage(String destinationNumber, String content, MessageType format, Long sendAt) {
         String standardisedNumber = carrierService.standardiseNumber(destinationNumber);
 
         if (!carrierService.isValidPhoneNumber(standardisedNumber)) {
@@ -63,7 +55,7 @@ public class MessageService {
     /*
         Helper methods
      */
-    private Message createAndSendMessage(String destinationNumber, String content, String format, Long sendAt) {
+    private Message createAndSendMessage(String destinationNumber, String content, MessageType format, Long sendAt) {
         Message message = new Message(destinationNumber, content, format, sendAt);
 
         message.setCarrier(carrierService.determineCarrier(destinationNumber));
@@ -74,7 +66,7 @@ public class MessageService {
         return message;
     }
 
-    private Message createBlockedMessage(String destinationNumber, String content, String format, Long sendAt) {
+    private Message createBlockedMessage(String destinationNumber, String content, MessageType format, Long sendAt) {
         Message message = new Message(destinationNumber, content, format, sendAt);
         message.setCarrier(carrierService.determineCarrier(destinationNumber));
         message.setStatus(MessageStatus.BLOCKED);
