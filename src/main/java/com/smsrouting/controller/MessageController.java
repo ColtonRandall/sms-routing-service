@@ -1,7 +1,9 @@
 package com.smsrouting.controller;
 
+import com.smsrouting.dto.MessageRequest;
 import com.smsrouting.model.Message;
 import com.smsrouting.service.MessageService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class MessageController {
     }
 
     @PostMapping("/messages")
-    public ResponseEntity<Message> sendMessage(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<Message> sendMessage(@Valid @RequestBody MessageRequest request) {
         try {
             Message message = messageService.sendMessage(request);
             return ResponseEntity.ok(message);
