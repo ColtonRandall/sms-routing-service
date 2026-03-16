@@ -9,13 +9,19 @@ public class Message {
     private String format;
     private MessageStatus status;
     private Carrier carrier;
+    private Long sendAt;
 
     public Message(String destinationNumber, String content, String format) {
+        this(destinationNumber, content, format, null);
+    }
+
+    public Message(String destinationNumber, String content, String format, Long sendAt) {
         this.id = UUID.randomUUID().toString();
         this.destinationNumber = destinationNumber;
         this.content = content;
         this.format = format;
         this.status = MessageStatus.PENDING;
+        this.sendAt = sendAt;
     }
 
     public String getId() {
@@ -64,5 +70,13 @@ public class Message {
 
     public void setCarrier(Carrier carrier) {
         this.carrier = carrier;
+    }
+
+    public Long getSendAt() {
+        return sendAt;
+    }
+
+    public void setSendAt(Long sendAt) {
+        this.sendAt = sendAt;
     }
 }

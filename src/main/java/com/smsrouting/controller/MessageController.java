@@ -18,33 +18,29 @@ public class MessageController {
     }
 
     @PostMapping("/messages")
-    public ResponseEntity<Message> sendMessage(@RequestBody Map<String, String> request){
-        try{
-            String destinationNumber = request.get("destinationNumber");
-            String content = request.get("content");
-            String format = request.getOrDefault("format", "SMS");
-
-            Message message = messageService.sendMessage(destinationNumber, content, format);
+    public ResponseEntity<Message> sendMessage(@RequestBody Map<String, Object> request) {
+        try {
+            Message message = messageService.sendMessage(request);
             return ResponseEntity.ok(message);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/messages/{id}")
-    public ResponseEntity<Message> getMessageStatus(@PathVariable String id){
+    public ResponseEntity<Message> getMessageStatus(@PathVariable String id) {
         return messageService.getMessage(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/optout/{phoneNumber}")
-    public ResponseEntity<Map<String, String>> optOut(@PathVariable String phoneNumber){
-        try{
+    public ResponseEntity<Map<String, String>> optOut(@PathVariable String phoneNumber) {
+        try {
             messageService.optOutNumber(phoneNumber);
             Map<String, String> response = Map.of("phoneNumber", phoneNumber, "status", "opted out");
             return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
     }

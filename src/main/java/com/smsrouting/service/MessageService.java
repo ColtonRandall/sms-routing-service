@@ -5,6 +5,8 @@ import com.smsrouting.model.MessageStatus;
 import com.smsrouting.repository.MessageRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -18,18 +20,35 @@ public class MessageService {
         this.carrierService = carrierService;
     }
 
-    public Message sendMessage(String destinationNumber, String content, String format){
+    public Message sendMessage(Map<String, Object> request) {
+        String destinationNumber = (String) request.get("destinationNumber");
+        String content = (String) request.get("content");
+        String format = (String) request.getOrDefault("format", "SMS");
+
+        Long sendAt = null;
+        if (request.containsKey("sendAt") && request.get("sendAt") instanceof Number number) {
+            sendAt = number.longValue();
+        }
+
+        return sendMessage(destinationNumber, content, format, sendAt);
+    }
+
+    public Message sendMessage(String destinationNumber, String content, String format) {
+        return sendMessage(destinationNumber, content, format, null);
+    }
+
+    public Message sendMessage(String destinationNumber, String content, String format, Long sendAt) {
         String standardisedNumber = carrierService.standardiseNumber(destinationNumber);
 
-        if(!carrierService.isValidPhoneNumber(standardisedNumber)){
+        if (!carrierService.isValidPhoneNumber(standardisedNumber)) {
             throw new IllegalArgumentException("Phone number: " + destinationNumber + " is invalid");
         }
 
-        if(repository.isOptedOut(standardisedNumber)){
-            return createBlockedMessage(destinationNumber, content, format);
+        if (repository.isOptedOut(standardisedNumber)) {
+            return createBlockedMessage(destinationNumber, content, format, sendAt);
         }
 
-        return createAndSendMessage(destinationNumber, content, format);
+        return createAndSendMessage(destinationNumber, content, format, sendAt);
     }
 
     public Optional<Message> getMessage(String id) {
@@ -44,8 +63,8 @@ public class MessageService {
     /*
         Helper methods
      */
-    private Message createAndSendMessage(String destinationNumber, String content, String format) {
-        Message message = new Message(destinationNumber, content, format);
+    private Message createAndSendMessage(String destinationNumber, String content, String format, Long sendAt) {
+        Message message = new Message(destinationNumber, content, format, sendAt);
 
         message.setCarrier(carrierService.determineCarrier(destinationNumber));
 
@@ -55,8 +74,8 @@ public class MessageService {
         return message;
     }
 
-    private Message createBlockedMessage(String destinationNumber, String content, String format) {
-        Message message = new Message(destinationNumber, content, format);
+    private Message createBlockedMessage(String destinationNumber, String content, String format, Long sendAt) {
+        Message message = new Message(destinationNumber, content, format, sendAt);
         message.setCarrier(carrierService.determineCarrier(destinationNumber));
         message.setStatus(MessageStatus.BLOCKED);
 
@@ -66,11 +85,15 @@ public class MessageService {
     }
 
     private void simulateSend(Message message) {
-        // simulate carrier api call
-        message.setStatus(MessageStatus.SENT);
+        Long sendAt = message.getSendAt();
 
-        // simulate immediate delivery of message
-        // note - in production, the status would be set by carrier callback/webhook asynchronously
-        message.setStatus(MessageStatus.DELIVERED);
+        if (sendAt != null && sendAt > Instant.now().getEpochSecond()) {
+            // sendAt is in the future, schedule the message
+            message.setStatus(MessageStatus.SCHEDULED);
+        } else {
+            // sendAt is null or in the past, deliver immediately
+            message.setStatus(MessageStatus.SENT);
+            message.setStatus(MessageStatus.DELIVERED);
+        }
     }
 }
