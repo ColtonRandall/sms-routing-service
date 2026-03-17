@@ -22,25 +22,17 @@ public class MessageService {
     }
 
     public Message sendMessage(MessageRequest request) {
-        return sendMessage(request.getDestinationNumber(), request.getContent(), request.getFormat(), request.getSendAt());
-    }
-
-    public Message sendMessage(String destinationNumber, String content, MessageType format) {
-        return sendMessage(destinationNumber, content, format, null);
-    }
-
-    public Message sendMessage(String destinationNumber, String content, MessageType format, Long sendAt) {
-        String standardisedNumber = carrierService.standardiseNumber(destinationNumber);
+        String standardisedNumber = carrierService.standardiseNumber(request.getDestinationNumber());
 
         if (!carrierService.isValidPhoneNumber(standardisedNumber)) {
-            throw new IllegalArgumentException("Phone number: " + destinationNumber + " is invalid");
+            throw new IllegalArgumentException("Phone number: " + request.getDestinationNumber() + " is invalid");
         }
 
         if (repository.isOptedOut(standardisedNumber)) {
-            return createBlockedMessage(destinationNumber, content, format, sendAt);
+            return createBlockedMessage(request.getDestinationNumber(), request.getContent(), request.getFormat(), request.getSendAt());
         }
 
-        return createAndSendMessage(destinationNumber, content, format, sendAt);
+        return createAndSendMessage(request.getDestinationNumber(), request.getContent(), request.getFormat(), request.getSendAt());
     }
 
     public Optional<Message> getMessage(String id) {

@@ -1,9 +1,10 @@
 package com.smsrouting.controller;
 
 import com.smsrouting.dto.MessageRequest;
-import com.smsrouting.model.Message;
+import com.smsrouting.dto.MessageResponse;
 import com.smsrouting.service.MessageService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +21,19 @@ public class MessageController {
     }
 
     @PostMapping("/messages")
-    public ResponseEntity<Message> sendMessage(@Valid @RequestBody MessageRequest request) {
+    public ResponseEntity<MessageResponse> sendMessage(@Valid @RequestBody MessageRequest request) {
         try {
-            Message message = messageService.sendMessage(request);
-            return ResponseEntity.ok(message);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(MessageResponse.from(messageService.sendMessage(request)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/messages/{id}")
-    public ResponseEntity<Message> getMessageStatus(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> getMessageStatus(@PathVariable String id) {
         return messageService.getMessage(id)
+                .map(MessageResponse::from)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
